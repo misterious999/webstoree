@@ -19,7 +19,8 @@
       <div class="flex items-center justify-between w-full">
         <!-- Left: Logo + Hamburger -->
         <div class="flex items-center gap-3">
-          <button id="hamburger-btn" class="md:hidden w-10 h-10 flex items-center justify-center text-2xl text-[#E3B23C] border border-[#222] bg-[#2C2C2C]">
+          <button id="hamburger-btn" 
+                  class="md:hidden w-10 h-10 flex items-center justify-center text-2xl text-[#E3B23C] border-2 border-[#222] bg-[#2C2C2C] active:bg-[#3D3D3D]">
             ☰
           </button>
           <div class="flex items-center gap-3">
@@ -108,7 +109,7 @@
     <!-- Quick Actions -->
     <div class="mb-8">
       <h3 class="mc-font text-[#E3B23C] text-sm mb-3 tracking-wider">AKSI CEPAT</h3>
-      <div class="grid grid-cols-2 md:grid-cols-5 gap-3">
+      <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3">
         <button onclick="navigateTo('manage_ptero_users.html')" 
                 class="mc-btn flex flex-col items-center justify-center gap-2 py-5 text-sm">
           <span class="text-3xl">👤</span>
@@ -179,6 +180,7 @@
       if (!user) return;
 
       initCommonUI();
+      initHamburgerMenu();   // Pastikan hamburger bisa diklik
 
       const mode = getCurrentMode();
       const config = modeConfig[mode];
