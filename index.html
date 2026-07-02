@@ -16,21 +16,28 @@
   <!-- Topbar -->
   <div class="mc-topbar sticky top-0 z-50">
     <div class="max-w-screen-2xl mx-auto px-6 py-4 flex items-center justify-between">
-      <div class="flex items-center gap-4">
+      <div class="flex items-center justify-between w-full">
+        <!-- Left: Logo + Hamburger -->
         <div class="flex items-center gap-3">
-          <div class="w-9 h-9 bg-[#5D9C3E] border-2 border-[#2E4A1F] flex items-center justify-center text-xl">⛏️</div>
-          <div>
-            <span class="mc-font text-2xl text-[#E3B23C]">ZEROIXDARK</span>
-            <span class="text-xs text-[#5D9C3E] block -mt-1 tracking-[2px]">MINECRAFT</span>
+          <button id="hamburger-btn" class="md:hidden w-10 h-10 flex items-center justify-center text-2xl text-[#E3B23C] border border-[#222] bg-[#2C2C2C]">
+            ☰
+          </button>
+          <div class="flex items-center gap-3">
+            <div class="w-9 h-9 bg-[#5D9C3E] border-2 border-[#2E4A1F] flex items-center justify-center text-xl">⛏️</div>
+            <div>
+              <span class="mc-font text-2xl text-[#E3B23C]">ZEROIXDARK</span>
+              <span class="text-xs text-[#5D9C3E] block -mt-1 tracking-[2px]">MINECRAFT</span>
+            </div>
           </div>
         </div>
-        
-        <!-- Mode Switcher -->
-        <div id="mode-switcher" class="flex items-center gap-1 ml-6 bg-[#2C2C2C] p-1 border border-[#222]"></div>
-      </div>
 
-      <div class="flex items-center gap-4">
-        <div id="user-info"></div>
+        <!-- Desktop Mode Switcher -->
+        <div id="mode-switcher" class="hidden md:flex items-center gap-1 bg-[#2C2C2C] p-1 border border-[#222]"></div>
+
+        <!-- Right: User Info -->
+        <div class="flex items-center gap-4">
+          <div id="user-info"></div>
+        </div>
       </div>
     </div>
   </div>
@@ -200,6 +207,72 @@
       });
 
       console.log('%c[ZeroixDark] Dashboard Minecraft siap untukmu, Sayang.', 'color:#5D9C3E');
+    }
+
+    // ==================== HAMBURGER + MOBILE DRAWER ====================
+    function initHamburgerMenu() {
+      const btn = document.getElementById('hamburger-btn');
+      if (!btn) return;
+
+      btn.addEventListener('click', () => {
+        let drawer = document.getElementById('mobile-drawer');
+        if (drawer) {
+          drawer.remove();
+          return;
+        }
+
+        const mode = getCurrentMode();
+        const user = getCurrentUser();
+
+        drawer = document.createElement('div');
+        drawer.id = 'mobile-drawer';
+        drawer.className = 'fixed inset-0 z-[99999] bg-black/70 md:hidden';
+        drawer.innerHTML = `
+          <div class="absolute right-0 top-0 h-full w-72 bg-[#2C2C2C] border-l-4 border-[#222] p-6 overflow-y-auto">
+            <div class="flex justify-between items-center mb-6">
+              <span class="mc-font text-[#E3B23C] text-xl">MENU</span>
+              <button onclick="document.getElementById('mobile-drawer').remove()" class="text-3xl text-[#888]">&times;</button>
+            </div>
+
+            <div class="mb-6 p-4 bg-[#1C2526] border border-[#222]">
+              <div class="text-[#E3B23C] font-bold">${user ? user.username.toUpperCase() : ''}</div>
+              <div class="text-xs text-[#888]">ROLE: ${user ? user.role.toUpperCase() : ''}</div>
+            </div>
+
+            <div class="mb-2 text-xs text-[#E3B23C] tracking-wider">GANTI MODE</div>
+            <div class="space-y-2 mb-6">
+              ${Object.keys(modeConfig).map(m => {
+                const cfg = modeConfig[m];
+                const active = m === mode ? 'bg-[#5D9C3E] text-white border-[#2E4A1F]' : 'bg-[#3D3D3D] text-[#E0E0E0] border-[#222]';
+                return `
+                  <button onclick="switchModeFromDrawer('${m}')" 
+                          class="w-full flex items-center gap-3 px-4 py-3 border-2 ${active} text-left text-sm">
+                    <span>${m === 'private' ? '🔒' : m === 'public' ? '🌍' : '🌐'}</span>
+                    <span>${cfg.title}</span>
+                  </button>
+                `;
+              }).join('')}
+            </div>
+
+            <button onclick="logout(); document.getElementById('mobile-drawer').remove();" 
+                    class="w-full py-3 text-sm border-2 border-red-900 text-red-400 hover:bg-red-950">
+              KELUAR DARI PANEL
+            </button>
+          </div>
+        `;
+        document.body.appendChild(drawer);
+
+        drawer.addEventListener('click', (e) => {
+          if (e.target === drawer) drawer.remove();
+        });
+      });
+    }
+
+    function switchModeFromDrawer(newMode) {
+      const drawer = document.getElementById('mobile-drawer');
+      if (drawer) drawer.remove();
+      setMode(newMode);
+      window.location.reload();
     }
 
     function renderModeInfoCard(mode, config) {
