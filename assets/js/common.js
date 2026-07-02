@@ -370,7 +370,7 @@ function initCommonUI() {
   const userInfoEl = document.getElementById('user-info');
   if (userInfoEl) {
     userInfoEl.innerHTML = `
-      <div class="flex items-center gap-3 bg-[#2C2C2C] border-2 border-[#222] px-4 py-2 rounded">
+      <div class="hidden md:flex items-center gap-3 bg-[#2C2C2C] border-2 border-[#222] px-4 py-2 rounded">
         <div class="w-8 h-8 bg-[#5D9C3E] flex items-center justify-center text-white text-xl border border-[#2E4A1F]">👤</div>
         <div>
           <div class="text-[#E3B23C] text-sm font-bold">${user.username.toUpperCase()}</div>
