@@ -15,17 +15,28 @@
   <!-- Topbar -->
   <div class="mc-topbar sticky top-0 z-50">
     <div class="max-w-screen-2xl mx-auto px-6 py-4 flex items-center justify-between">
-      <div class="flex items-center gap-4">
+      <!-- Left: Logo -->
+      <div class="flex items-center gap-3">
         <div class="flex items-center gap-3">
           <div class="w-9 h-9 bg-[#5D9C3E] border-2 border-[#2E4A1F] flex items-center justify-center text-xl">⛏️</div>
           <div>
             <span class="mc-font text-2xl text-[#E3B23C]">ZEROIXDARK</span>
-            <span class="text-xs text-[#5D9C3E] block -mt-1">MINECRAFT</span>
+            <span class="text-xs text-[#5D9C3E] block -mt-1 tracking-[2px]">MINECRAFT</span>
           </div>
         </div>
-        <div id="mode-switcher" class="flex items-center gap-1 ml-4 bg-[#2C2C2C] p-1 border border-[#222]"></div>
       </div>
-      <div id="user-info"></div>
+
+      <!-- Desktop Mode Switcher -->
+      <div id="mode-switcher" class="hidden md:flex items-center gap-1 bg-[#2C2C2C] p-1 border border-[#222]"></div>
+
+      <!-- Right: Hamburger + User Info -->
+      <div class="flex items-center gap-3">
+        <button id="hamburger-btn" 
+                class="md:hidden w-10 h-10 flex items-center justify-center text-2xl text-[#E3B23C] border-2 border-[#222] bg-[#2C2C2C] active:bg-[#3D3D3D]">
+          ☰
+        </button>
+        <div id="user-info"></div>
+      </div>
     </div>
   </div>
 
@@ -61,8 +72,8 @@
     </div>
 
     <!-- Users Table -->
-    <div class="mc-card overflow-hidden">
-      <table class="mc-table">
+    <div class="mc-card overflow-x-auto">
+      <table class="mc-table min-w-[700px]">
         <thead>
           <tr>
             <th>USERNAME</th>
