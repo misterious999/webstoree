@@ -402,3 +402,78 @@ if (typeof firebase !== 'undefined') {
 
 // Expose global untuk debug jika perlu
 window.ZeroixDark = { getCurrentMode, modeConfig, pteroApiCall, logActivity };
+
+// ==================== GLOBAL HAMBURGER MENU (reusable untuk semua halaman) ====================
+function initHamburgerMenu() {
+  const btn = document.getElementById('hamburger-btn');
+  if (!btn) return;
+
+  btn.addEventListener('click', () => {
+    let drawer = document.getElementById('mobile-drawer');
+    if (drawer) {
+      drawer.remove();
+      return;
+    }
+
+    const mode = getCurrentMode();
+    const user = getCurrentUser();
+
+    drawer = document.createElement('div');
+    drawer.id = 'mobile-drawer';
+    drawer.className = 'fixed inset-0 z-[99999] bg-black/70 md:hidden';
+    drawer.innerHTML = `
+      <div class="absolute right-0 top-0 h-full w-72 bg-[#2C2C2C] border-l-4 border-[#222] p-6 overflow-y-auto">
+        <div class="flex justify-between items-center mb-6">
+          <span class="mc-font text-[#E3B23C] text-xl">MENU</span>
+          <button onclick="document.getElementById('mobile-drawer').remove()" class="text-3xl text-[#888]">&times;</button>
+        </div>
+
+        <div class="mb-6 p-4 bg-[#1C2526] border border-[#222]">
+          <div class="text-[#E3B23C] font-bold">${user ? user.username.toUpperCase() : ''}</div>
+          <div class="text-xs text-[#888]">ROLE: ${user ? user.role.toUpperCase() : ''}</div>
+        </div>
+
+        <div class="mb-2 text-xs text-[#E3B23C] tracking-wider">GANTI MODE</div>
+        <div class="space-y-2 mb-6">
+          ${Object.keys(modeConfig).map(m => {
+            const cfg = modeConfig[m];
+            const active = m === mode ? 'bg-[#5D9C3E] text-white border-[#2E4A1F]' : 'bg-[#3D3D3D] text-[#E0E0E0] border-[#222]';
+            return `
+              <button onclick="switchModeFromDrawer('${m}')" 
+                      class="w-full flex items-center gap-3 px-4 py-3 border-2 ${active} text-left text-sm">
+                <span>${m === 'private' ? '🔒' : m === 'public' ? '🌍' : '🌐'}</span>
+                <span>${cfg.title}</span>
+              </button>
+            `;
+          }).join('')}
+        </div>
+
+        <button onclick="logout(); document.getElementById('mobile-drawer').remove();" 
+                class="w-full py-3 text-sm border-2 border-red-900 text-red-400 hover:bg-red-950">
+          KELUAR DARI PANEL
+        </button>
+      </div>
+    `;
+    document.body.appendChild(drawer);
+
+    drawer.addEventListener('click', (e) => {
+      if (e.target === drawer) drawer.remove();
+    });
+  });
+}
+
+function switchModeFromDrawer(newMode) {
+  const drawer = document.getElementById('mobile-drawer');
+  if (drawer) drawer.remove();
+  setMode(newMode);
+  window.location.reload();
+}
+
+// Auto init hamburger di semua halaman (jika tombol ada)
+document.addEventListener('DOMContentLoaded', () => {
+  setTimeout(() => {
+    if (document.getElementById('hamburger-btn')) {
+      initHamburgerMenu();
+    }
+  }, 400);
+});
